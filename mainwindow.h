@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #pragma execution_character_set("utf-8")
@@ -90,10 +90,19 @@ public slots:
     void ClientSlots(int nCount);
 
 private:
+    void LoadData();
+
+private:
     Ui::MainWindow *ui;
     TCPClientDemo *demo;
     QTimer* timer;
     QLabel* lblStatus;
+
+    QByteArray data;
+    int m_data1;
+    int m_data2;
+    int m_data3;
+    int m_data4;
 
     int nCount_;
 };
