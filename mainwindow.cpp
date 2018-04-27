@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     data.resize(38);
     data[0] = 0xFF;
     data[1] = 0x00;
-    data[2] = 0x01;
+    data[2] = 0x26;
     data[3] = 0x02;
     data[4] = 0x31;
     data[5] = 0x32;
