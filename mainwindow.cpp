@@ -9,12 +9,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    demo = new TCPClientDemo();
+    nSize = 1;
+    for(int i = 0; i < nSize; i++)
+    {
+        TCPClientDemo* demo = new TCPClientDemo();
+        demolist.append(demo);
+        connect(demo, SIGNAL(ClientSignals(int)), this, SLOT(ClientSlots(int)));
+    }
+
 
     timer = new QTimer();
-
     connect(timer, SIGNAL(timeout()), this, SLOT(Timeout()));
-    connect(demo, SIGNAL(ClientSignals(int)), this, SLOT(ClientSlots(int)));
+
 
     lblStatus = new QLabel();
     ui->statusBar->addWidget(lblStatus);
@@ -27,8 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_data2 = 0;
     m_data3 = 0;
     m_data4 = 0;
-
-
 
     data.resize(38);
     data[0] = 0xFF;
@@ -88,14 +92,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnConnect_clicked()
 {
-    demo->Set_IP_PORT(ui->edtIP->text(), ui->edtPort->text());
-    if(demo->pSocketObj->GetOpenStatus())
+    for(int i = 0; i < nSize; i++)
     {
-        demo->Close();
-    }
-    else
-    {
-        demo->Open();
+        TCPClientDemo* demo = demolist[i];
+        demo->Set_IP_PORT(ui->edtIP->text(), ui->edtPort->text());
+        if(demo->pSocketObj->GetOpenStatus())
+        {
+            demo->Close();
+        }
+        else
+        {
+            demo->Open();
+        }
     }
 }
 
@@ -144,7 +152,7 @@ void MainWindow::LoadData()
 
 void MainWindow::on_btnSend_clicked()
 {
-    if(demo->pSocketObj->GetOpenStatus())
+    if(demolist[0]->pSocketObj->GetOpenStatus())
     {
         if(ui->checkBox->isChecked())
         {
@@ -163,7 +171,11 @@ void MainWindow::on_btnSend_clicked()
             ui->edtCount->setText(QString::number(nCount_));
 
             LoadData();
-            demo->SendData(data);
+            for(int i = 0; i < nSize; i++)
+            {
+                TCPClientDemo* demo = demolist[i];
+                demo->SendData(data);
+            }
             //demo->SendData(ui->textEdit->toPlainText().toLatin1());
         }
     }
@@ -180,9 +192,15 @@ void MainWindow::ClientSlots(int nCount)
         ui->btnConnect->setText(tr("断开"));
         ui->btnSend->setEnabled(true);
     }else if(nCount == 2){
-        ui->plainTextEdit->appendPlainText(demo->m_strRecvData);
-        ui->plainTextEdit->update();
+        TCPClientDemo* demo =qobject_cast<TCPClientDemo*>(sender());
         demo->m_strRecvData.clear();
+
+        if(demolist.indexOf(demo) == 0)
+        {
+            ui->plainTextEdit->appendPlainText(demo->m_strRecvData);
+            ui->plainTextEdit->update();
+        }
+
     }else{
 
     }
@@ -192,13 +210,18 @@ void MainWindow::Timeout()
 {
     if(ui->checkBox->isChecked())
     {
-        if(demo->pSocketObj->GetOpenStatus())
+        if(demolist[0]->pSocketObj->GetOpenStatus())
         {
             nCount_++;
             ui->edtCount->setText(QString::number(nCount_));
 
             LoadData();
-            demo->SendData(data);
+            for(int i = 0; i < nSize; i++)
+            {
+                TCPClientDemo* demo = demolist[i];
+                demo->SendData(data);
+            }
+
             //demo->SendData(ui->textEdit->toPlainText().toLatin1());
         }
     }

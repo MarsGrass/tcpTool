@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QLabel>
 #include <QThread>
+#include <QList>
 
 #include "Common/TCPClient.h"
 
@@ -94,7 +95,7 @@ private:
 
 private:
     Ui::MainWindow *ui;
-    TCPClientDemo *demo;
+    QList<TCPClientDemo*> demolist;
     QTimer* timer;
     QLabel* lblStatus;
 
@@ -105,6 +106,8 @@ private:
     int m_data4;
 
     int nCount_;
+
+    int nSize;
 };
 
 #endif // MAINWINDOW_H
