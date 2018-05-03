@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    nSize = 1;
+    nSize = 4;
     for(int i = 0; i < nSize; i++)
     {
         TCPClientDemo* demo = new TCPClientDemo();
@@ -83,6 +83,13 @@ MainWindow::MainWindow(QWidget *parent) :
     data[36] = datetime.time().second() % 10 + datetime.time().second() / 10 * 16;
 
     data[37] = 0xFF;
+
+    data2_ = data;
+    data2_[7] = 0x35;
+    data3_ = data;
+    data3_[7] = 0x36;
+    data4_ = data;
+    data4_[7] = 0x37;
 }
 
 MainWindow::~MainWindow()
@@ -148,6 +155,13 @@ void MainWindow::LoadData()
     m_data2++;
     m_data3++;
     m_data4++;
+
+    data2_ = data;
+    data2_[7] = 0x35;
+    data3_ = data;
+    data3_[7] = 0x36;
+    data4_ = data;
+    data4_[7] = 0x37;
 }
 
 void MainWindow::on_btnSend_clicked()
@@ -171,11 +185,16 @@ void MainWindow::on_btnSend_clicked()
             ui->edtCount->setText(QString::number(nCount_));
 
             LoadData();
-            for(int i = 0; i < nSize; i++)
-            {
-                TCPClientDemo* demo = demolist[i];
-                demo->SendData(data);
-            }
+
+            demolist[0]->SendData(data);
+            demolist[1]->SendData(data2_);
+            demolist[2]->SendData(data3_);
+            demolist[3]->SendData(data4_);
+//            for(int i = 0; i < nSize; i++)
+//            {
+//                TCPClientDemo* demo = demolist[i];
+//                demo->SendData(data);
+//            }
             //demo->SendData(ui->textEdit->toPlainText().toLatin1());
         }
     }
@@ -216,11 +235,16 @@ void MainWindow::Timeout()
             ui->edtCount->setText(QString::number(nCount_));
 
             LoadData();
-            for(int i = 0; i < nSize; i++)
-            {
-                TCPClientDemo* demo = demolist[i];
-                demo->SendData(data);
-            }
+            demolist[0]->SendData(data);
+            demolist[1]->SendData(data2_);
+            demolist[2]->SendData(data3_);
+            demolist[3]->SendData(data4_);
+
+//            for(int i = 0; i < nSize; i++)
+//            {
+//                TCPClientDemo* demo = demolist[i];
+//                demo->SendData(data);
+//            }
 
             //demo->SendData(ui->textEdit->toPlainText().toLatin1());
         }

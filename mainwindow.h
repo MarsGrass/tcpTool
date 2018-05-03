@@ -100,6 +100,9 @@ private:
     QLabel* lblStatus;
 
     QByteArray data;
+    QByteArray data2_;
+    QByteArray data3_;
+    QByteArray data4_;
     int m_data1;
     int m_data2;
     int m_data3;
